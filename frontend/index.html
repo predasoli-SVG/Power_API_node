@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👟 Nike Air Force Explorer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>👟 Explorador Nike Air Force</h1>
+    <p class="subtitle">Consumindo nossa própria API em Node.js</p>
+
+    <div class="tenis-area">
+      <img alt="Tênis Nike Air Force" id="tenisImage" hidden>
+      <div id="modelName" aria-live="polite"></div>
+    </div>
+
+    <div class="controls">
+      <button id="randomBtn">🎲 Tênis Aleatório</button>
+    </div>
+
+    <div class="search">
+      <input type="text" id="modelInput"
+        aria-label="Modelo do tênis"
+        placeholder="Ex: air-force-1-branco">
+      <button id="searchBtn">🔍 Buscar</button>
+    </div>
+    <p class="examples">Modelos: air-force-1-branco, air-force-1-preto e air-force-1-07</p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

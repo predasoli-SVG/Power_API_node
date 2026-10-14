@@ -1,0 +1,85 @@
+/* Estilo simples para organizar a imagem e os controles */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+  background: #f1f2f4;
+  color: #202020;
+}
+.container {
+  max-width: 650px;
+  margin: 30px auto;
+  padding: 28px;
+  background: white;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 25px #00000012;
+}
+h1 {
+  font-size: 28px;
+}
+.subtitle, .examples {
+  color: #606060;
+  line-height: 1.5;
+}
+.tenis-area {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+  margin: 24px 0;
+  background: #f7f7f7;
+  border-radius: 12px;
+}
+#tenisImage {
+  max-width: 100%;
+  height: 260px;
+  object-fit: contain;
+  cursor: pointer;
+}
+#modelName {
+  font-weight: bold;
+  line-height: 1.5;
+}
+.loading {
+  opacity: 0.5;
+}
+.search {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+input, button {
+  padding: 13px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #bbb;
+}
+button {
+  border: 0;
+  background: #202020;
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  background: #444;
+}
+.examples {
+  font-size: 13px;
+}
+@media (max-width: 480px) {
+  body { padding: 12px; }
+  .container { padding: 18px; }
+  h1 { font-size: 23px; }
+  .search { flex-direction: column; }
+}
