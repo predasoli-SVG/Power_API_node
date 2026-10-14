@@ -1,82 +1,86 @@
 
 
-// Importar o Express para criar o servidor
 const express = require("express");
-// Importar o CORS para permitir requisições do frontend
 const cors = require("cors");
-// Importar utilidades para trabalhar com caminhos de arquivos
-const path = require("path");
-// Importar o JSON que contém os modelos e caminhos das fotos
 const fs = require("fs");
-const tenis = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "tenis.json"), "utf8"));
-// Criar a aplicação Express
+const path = require("path");
 const app = express();
-// Definir a porta do servidor
 const PORT = 3000;
-// Habilitar o CORS
+const pastaFotos = path.join(__dirname, "data/fotos");
+
 app.use(cors());
-
-
-app.use("/fotos", express.static(path.join(__dirname, "data/fotos")));
-// Servir o frontend para abrir a página em http://localhost:3000
+app.use("/fotos", express.static(pastaFotos));
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 
 function sortear(array) {
-  
   const i = Math.floor(Math.random() * array.length);
   return array[i];
 }
 
 
+function normalizar(texto) {
+  return texto.toLowerCase().normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+
+function carregarFotos() {
+  if (!fs.existsSync(pastaFotos)) {
+    return [];
+  }
+  // voce nao explicou isso professor, e pelo que eu pesquisei Esse código pega uma lista, joga fora o que não for imagem e prepara os arquivos que sobraram para serem usados no sistema. 
+  return fs.readdirSync(pastaFotos, { withFileTypes: true })
+    .filter((arquivo) => arquivo.isFile() && /\.(jpg|jpeg|png|webp|avif|gif)$/i.test(arquivo.name))
+    .map((arquivo) => ({
+      modelo: path.parse(arquivo.name).name,
+      arquivo: arquivo.name,
+    }));
+}
+
+function responderFoto(res, item) {
+  res.json({
+    status: "success",
+    
+    message: `http://localhost:${PORT}/fotos/${encodeURIComponent(item.arquivo)}`,
+    modelo: item.modelo,
+  });
+}
+
+
 app.get("/api/tenis/aleatorio", (req, res) => {
-  
-  const todasAsFotos = Object.values(tenis).flat();
+  const todasAsFotos = carregarFotos();
+  if (!todasAsFotos.length) {
+    res.status(404).json({
+      status: "error",
+      message: "Nenhuma imagem encontrada em backend/data/fotos",
+    });
+    return;
+  }
   const item = sortear(todasAsFotos);
-
-  // Evitar retornar uma URL inválida se o cadastro estiver vazio
-  if (!item) {
-    res.status(404).json({
-      status: "error",
-      message: "Nenhuma foto cadastrada",
-    });
-    return;
-  }
-
-  // Responder ao cliente em formato JSON
-  res.json({
-    status: "success",
-    message: `http://localhost:${PORT}/fotos/${item}`,
-  });
+  responderFoto(res, item);
 });
 
-// ROTA 2 - Tênis por modelo
-// Exemplo: http://localhost:3000/api/tenis/air-force-1-branco
 app.get("/api/tenis/:modelo", (req, res) => {
-  // Pegar o parâmetro da URL e transformar em letras minúsculas
-  const modelo = req.params.modelo.toLowerCase();
-  // Verificar se o modelo pertence ao cadastro e possui fotos
-  if (!Object.prototype.hasOwnProperty.call(tenis, modelo) || !tenis[modelo].length) {
+  const modelo = normalizar(req.params.modelo);
+  
+  const fotosDoModelo = carregarFotos().filter((item) =>
+    normalizar(item.modelo).includes(modelo)
+  );
+  if (!modelo || !fotosDoModelo.length) {
     res.status(404).json({
       status: "error",
-      message: `Modelo "${modelo}" não encontrado ou sem fotos cadastradas`,
+      message: `Modelo "${req.params.modelo}" não encontrado`,
     });
     return;
   }
-
-  // Sortear uma foto do modelo solicitado
-  const item = sortear(tenis[modelo]);
-  res.json({
-    status: "success",
-    message: `http://localhost:${PORT}/fotos/${item}`,
-  });
+  const item = sortear(fotosDoModelo);
+  responderFoto(res, item);
 });
 
-//======================================
-// INICIA O SERVIDOR
-//======================================
+
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
-  console.log("📂 Coloque as fotos manualmente em: data/fotos/");
+  console.log("📂 Fotos ");
 });
-
