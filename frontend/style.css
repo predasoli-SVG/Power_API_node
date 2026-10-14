@@ -1,4 +1,4 @@
-/* Estilo simples para organizar a imagem e os controles */
+
 * {
   box-sizing: border-box;
 }
@@ -6,14 +6,14 @@ body {
   margin: 0;
   padding: 24px;
   font-family: Arial, sans-serif;
-  background: #f1f2f4;
+  background: linear-gradient(to right, #6290c5, #bbbddf);
   color: #202020;
 }
 .container {
   max-width: 650px;
   margin: 30px auto;
   padding: 28px;
-  background: white;
+   background: linear-gradient(to right, #6692c5, #bfc1df);
   border-radius: 16px;
   text-align: center;
   box-shadow: 0 8px 25px #00000012;
@@ -34,7 +34,7 @@ h1 {
   gap: 16px;
   padding: 20px;
   margin: 24px 0;
-  background: #f7f7f7;
+  background: #f1f3f3;
   border-radius: 12px;
 }
 #tenisImage {
